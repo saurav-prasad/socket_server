@@ -1,17 +1,19 @@
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io')
+require('dotenv').config()
+
 
 const app = express()
 const server = http.createServer(app)
-const port = 5500
+const port = process.env.PORT || 5000
 
 const io = new Server(server, {
     cors: {
         origin: "*"
     },
 })
-
+console.log(process.env.PORT);
 // Mapping between user IDs and socket IDs
 let users = {};
 
