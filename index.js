@@ -21,12 +21,15 @@ io.on('connection', (socket) => {
     console.log('A user connected')
 
     socket.on("online", (userId) => {
-        console.log(userId);
+        // console.log(userId);
         // const a = { ...users, receiver: userId }
         if (userId) {
             users[userId] = socket.id
+            console.log(Object.keys(users));
+            io.emit('get-online-users', Object.keys(users))
         }
     })
+
 
     socket.on('join', ({ userId, roomId }) => {
         console.log({ userId, roomId });
@@ -64,11 +67,21 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         console.log('User disconnected');
-        // Remove the user from the users object when disconnected
+
+        // Find the user that is disconnecting based on their socket ID
         const disconnectedUser = Object.keys(users).find(
             (key) => users[key] === socket.id
         );
-        delete users[disconnectedUser];
+
+        if (disconnectedUser) {
+            // Remove the user from the users object
+            delete users[disconnectedUser];
+
+            // Notify other users about the disconnection
+            io.emit('disconnected-user', disconnectedUser);
+        }
+
+        console.log('disconnected userid', socket.id);
     });
 
 });
