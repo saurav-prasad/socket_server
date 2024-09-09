@@ -13,7 +13,7 @@ const io = new Server(server, {
         origin: "*"
     },
 })
-console.log(process.env.PORT);
+console.log(port);
 // Mapping between user IDs and socket IDs
 let users = {};
 
