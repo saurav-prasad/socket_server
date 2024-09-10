@@ -2,16 +2,27 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io')
 require('dotenv').config()
+const cors = require('cors');
 
 
 const app = express()
 const server = http.createServer(app)
 const port = process.env.PORT || 5000
+const allowedOrigins = ['http://localhost:3000', 'https://chattila.vercel.app'];  // Add allowed origins here
+
+app.use(cors({
+    origin: allowedOrigins,
+    credentials: true
+}));
+
 
 const io = new Server(server, {
     cors: {
-        origin: "*"
-    },
+        origin: "https://chattila.vercel.app",  // Allow your Vercel frontend domain
+        methods: ["GET", "POST"],  // Specify allowed methods
+        credentials: true          // Allow cookies if needed
+
+    }
 })
 console.log(port);
 // Mapping between user IDs and socket IDs
@@ -89,4 +100,5 @@ io.on('connection', (socket) => {
 // server initialization
 server.listen(port, (req, res) => {
     console.log(`Server listening on port ${port}`);
-})  
+})
+
