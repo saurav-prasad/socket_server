@@ -26,15 +26,15 @@ io.on('connection', (socket) => {
         // const a = { ...users, receiver: userId }
         if (userId) {
             users[userId] = socket.id
-            console.log(Object.keys(users));
+            // console.log(Object.keys(users));
             io.emit('get-online-users', Object.keys(users))
         }
     })
 
 
     socket.on('join', ({ userId, roomId }) => {
-        console.log({ userId, roomId });
-        console.log("room join");
+        // console.log({ userId, roomId });
+        // console.log("room join");
         // Associate the user ID with the socket ID
         if (userId) { users[userId] = socket.id; }
         // Join the room
@@ -42,12 +42,12 @@ io.on('connection', (socket) => {
     });
 
     socket.on('private-message', (data) => {
-        console.log(users);
+        // console.log(users);
         const { sender, receiver, message } = data;
         const receiverSocketId = users[receiver];
         if (receiverSocketId) {
             // Send the private message to the receiver
-            io.to(receiverSocketId).emit('private-message', { sender, message });
+            io.to(receiverSocketId).emit('private-message', { ...data });
         } else {
             // Handle the case where the receiver is not online
             console.log(`User ${receiver} is not online`);
@@ -63,11 +63,11 @@ io.on('connection', (socket) => {
     socket.on('leave-group', (roomId) => {
         // Remove the user from the specified group
         socket.leave(roomId);
-        console.log(`User ${socket.id} left group ${roomId}`);
+        // console.log(`User ${socket.id} left group ${roomId}`);
     });
 
     socket.on('disconnect', () => {
-        console.log('User disconnected');
+        // console.log('User disconnected');
 
         // Find the user that is disconnecting based on their socket ID
         const disconnectedUser = Object.keys(users).find(
@@ -90,5 +90,5 @@ io.on('connection', (socket) => {
 // server initialization
 server.listen(port, (req, res) => {
     console.log(`Server listening on port ${port}`);
-})  
+})
 
